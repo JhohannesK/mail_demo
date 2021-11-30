@@ -1,5 +1,25 @@
 from django.shortcuts import render
+from django.core.mail import send_mail
 
 
 def index(request):
-    return render(request, "core/index.html")
+    if request.method == 'POST':
+        name = request.POST.get('full-name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        data = {
+            'name': name,
+            'email': email,
+            'subject': subject,
+            'message': message}
+        
+        message = """
+            New message: {}
+            
+            From: {}
+        """.format(data['message'], data['email'])
+        
+        send_mail(data['subject'], message, '', ['jhohanneskelvin@gmail.com'])
+    return render(request, "core/index.html", {})
